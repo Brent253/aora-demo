@@ -4,9 +4,13 @@ import React, { useState } from 'react'
 import { icons } from '@/constants'
 
 interface VideoCardProps {
-    video: { title: string, thumbnail: string, video: string, creator: { username: string, avatar: string } }
+    title: string,
+    username: string,
+    avatar: string
+    thumbnail: string,
+    video: string,
 }
-const VideoCard: React.FC<VideoCardProps> = ({ video: { title, thumbnail, video, creator: { username, avatar } } }) => {
+const VideoCard: React.FC<VideoCardProps> = ({ title, username, avatar, thumbnail, video }) => {
     const [play, setPlay] = useState(false)
     return (
         <View className='flex-col items-center px-4 mb-14'>
@@ -42,7 +46,7 @@ const VideoCard: React.FC<VideoCardProps> = ({ video: { title, thumbnail, video,
                     javaScriptEnabled
                     allowsInlineMediaPlayback
                     startInLoadingState
-                    scalesPageToFit={false}
+                    scalesPageToFit={true}
                 />
             ) : <TouchableOpacity activeOpacity={0.7} onPress={() => setPlay(true)} className='w-full h-60 rounded-xl mt-3 relative justify-center items-center'>
                 <Image source={{ uri: thumbnail }} className='w-full h-full rounded-xl mt-3' resizeMode='cover' />

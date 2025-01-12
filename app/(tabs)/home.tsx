@@ -1,5 +1,5 @@
 import { View, Text, FlatList, Image, RefreshControl, Alert } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { images } from '../../constants'
 import SearchInput from '@/components/SearchInput'
@@ -8,11 +8,14 @@ import EmptyState from '@/components/EmptyState'
 import { getAllPosts, getLatestPosts } from '@/lib/appwrite'
 import useAppwrite from '../../lib/useAppwrite';
 import VideoCard from '@/components/VideoCard'
+import { useGlobalContext } from '@/context/GlobalProvider'
 
 const Home = () => {
     const { data: posts, refetch } = useAppwrite(getAllPosts);
     const { data: latestPosts } = useAppwrite(getLatestPosts);
     const [refreshing, setRefreshing] = useState(false);
+
+    const { user, setUser, setIsLoggedIn } = useGlobalContext();
 
     const onRefresh = async () => {
         setRefreshing(true);
@@ -27,7 +30,13 @@ const Home = () => {
                     data={posts}
                     keyExtractor={(item: any) => item.$id}
                     renderItem={({ item }) => (
-                        <VideoCard video={item} />
+                        <VideoCard
+                            title={item.title}
+                            thumbnail={item.thumbnail}
+                            username={item.creator.username}
+                            avatar={item.creator.avatar}
+                            video={item.video}
+                        />
                     )}
                     ListHeaderComponent={() => (
                         <View className='my-6 px-4 space-y-6'>
@@ -37,7 +46,7 @@ const Home = () => {
                                         Welcome Back
                                     </Text>
                                     <Text className='text-2xl font-psemibold text-white'>
-                                        Tester
+                                        {user?.username}
                                     </Text>
                                 </View>
 

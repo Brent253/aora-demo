@@ -1,7 +1,7 @@
 import { View, Text, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { icons } from '../constants';
-import { usePathname } from 'expo-router';
+import { router, usePathname } from 'expo-router';
 
 interface SearchInputProps {
     title?: string;
@@ -10,10 +10,11 @@ interface SearchInputProps {
     handleChangeText?(e: any): void;
     otherStyles?: string;
     keyboardType?: string;
+    initialQuery?: string;
 }
-const SearchInput: React.FC<SearchInputProps> = ({ title, value, placeHolder, handleChangeText, otherStyles, keyboardType, ...props }) => {
+const SearchInput: React.FC<SearchInputProps> = ({ title, value, placeHolder, handleChangeText, otherStyles, keyboardType, initialQuery, ...props }) => {
     const pathname = usePathname();
-    const [query, setQuery] = useState('')
+    const [query, setQuery] = useState(initialQuery || '')
     return (
 
         <View className='border-2 border-black-200 w-full h-16 px-4 bg-black-100 rounded-2xl
@@ -30,7 +31,13 @@ const SearchInput: React.FC<SearchInputProps> = ({ title, value, placeHolder, ha
             <TouchableOpacity
                 onPress={() => {
                     if (!query) {
-                        return Alert.alert('Missing query', "Please input something to search results across database")
+                        return Alert.alert('Missing query', "Please input something to search results across database");
+                    }
+
+                    if (pathname.startsWith('/search')) {
+                        router.setParams({ query })
+                    } else {
+                        router.push(`/search/${query}`)
                     }
                 }}
             >

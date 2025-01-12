@@ -11,21 +11,7 @@ import React, { useEffect } from "react";
 export default function Index() {
   const { isLoading, isLoggedIn, setIsLoggedIn } = useGlobalContext();
   if (!isLoading && isLoggedIn) return <Redirect href="/home" />
-  useEffect(() => {
-    console.log('test')
-    getActiveSession()
-      .then((session) => {
-        if (session.error) {
-          console.log(session.error, session.details);
-          return;
-        } else {
-          console.log('Active session:', session);
-          setIsLoggedIn(true);
-          return <Redirect href="/home" />
-        }
-      })
-      .catch((error) => console.error('Error:', error));
-  }, [])
+
 
   return (
     <SafeAreaView

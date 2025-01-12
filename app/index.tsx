@@ -4,8 +4,29 @@ import { StatusBar } from "expo-status-bar";
 import { Redirect, router } from 'expo-router';
 import { images } from '../constants';
 import CustomButton from "@/components/CustomButton";
+import { useGlobalContext } from "@/context/GlobalProvider";
+import { getActiveSession } from "@/lib/appwrite";
+import React, { useEffect } from "react";
 
 export default function Index() {
+  const { isLoading, isLoggedIn, setIsLoggedIn } = useGlobalContext();
+  if (!isLoading && isLoggedIn) return <Redirect href="/home" />
+  useEffect(() => {
+    console.log('test')
+    getActiveSession()
+      .then((session) => {
+        if (session.error) {
+          console.log(session.error, session.details);
+          return;
+        } else {
+          console.log('Active session:', session);
+          setIsLoggedIn(true);
+          return <Redirect href="/home" />
+        }
+      })
+      .catch((error) => console.error('Error:', error));
+  }, [])
+
   return (
     <SafeAreaView
       className="bg-primary h-full"
@@ -26,7 +47,7 @@ export default function Index() {
           <Text className="text-sm font-pregular text-gray-100 mt-7 text-center">Where creativity meets innovation:
             embark on a journey of limitless exploration with Aora
           </Text>
-          <CustomButton title="Continue with Email" handlePress={() => router.push('/sign-in')} containerStyles="w-full mt-7 p-5" textStyles="" isLoading={false} />
+          <CustomButton title="Continue with Email" handlePress={() => router.push('/sign-in')} containerStyles="w-full mt-7 p-2" textStyles="" isLoading={false} />
         </View>
       </ScrollView>
       <StatusBar backgroundColor="#161622" style="light" />
